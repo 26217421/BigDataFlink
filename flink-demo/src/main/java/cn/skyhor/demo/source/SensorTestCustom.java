@@ -27,7 +27,7 @@ public class SensorTestCustom {
         public void run(SourceContext<SensorReading> ctx) throws Exception {
             SecureRandom random = new SecureRandom();
             HashMap<String, Double> sensorMap = new HashMap<>();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 5; i++) {
                 sensorMap.put("sensor_" + (i+1), 60 + random.nextGaussian() * 20);
             }
             while (running) {
