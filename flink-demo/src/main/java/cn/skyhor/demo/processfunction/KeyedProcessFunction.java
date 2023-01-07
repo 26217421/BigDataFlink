@@ -34,7 +34,7 @@ public class KeyedProcessFunction {
 
         @Override
         public void open(Configuration parameters) throws Exception {
-            tsTimerState =  getRuntimeContext().getState(new ValueStateDescriptor<Long>("ts-timer", Long.class));
+            tsTimerState =  getRuntimeContext().getState(new ValueStateDescriptor<>("ts-timer", Long.class));
         }
 
         @Override

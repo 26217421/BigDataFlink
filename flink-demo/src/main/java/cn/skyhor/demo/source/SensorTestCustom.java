@@ -33,7 +33,7 @@ public class SensorTestCustom {
             while (running) {
                 for (String sessionId:sensorMap.keySet()
                      ) {
-                    double newTemp = sensorMap.get(sessionId) + random.nextGaussian();
+                    double newTemp = sensorMap.get(sessionId) + random.nextGaussian()*15;
                     sensorMap.put(sessionId, newTemp);
                     ctx.collect(new SensorReading(sessionId, System.currentTimeMillis(),
                             newTemp));
