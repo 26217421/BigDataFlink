@@ -10,6 +10,7 @@
     <version>1.0.0</version>
     <modules>
         <module>flink-demo</module>
+        <module>UserBehaviorAnalysis</module>
     </modules>
 
     <properties>
