@@ -11,6 +11,7 @@
     <modules>
         <module>flink-demo</module>
         <module>UserBehaviorAnalysis</module>
+        <module>gmall-realtime</module>
     </modules>
 
     <properties>
