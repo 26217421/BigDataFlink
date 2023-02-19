@@ -33,7 +33,7 @@ public class MyKafkaUtil {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
     }
 
-    public static FlinkKafkaConsumer<String> getKafkaConsumer(String topic, String groupId) {
+    public static FlinkKafkaConsumer<String> getKafkaSource(String topic, String groupId) {
 
         Properties properties = new Properties();
 
@@ -46,7 +46,7 @@ public class MyKafkaUtil {
 
     }
 
-    //拼接Kafka相关属性到DDL
+    /** 拼接Kafka相关属性到DDL*/
     public static String getKafkaDDL(String topic, String groupId) {
         return  " 'connector' = 'kafka', " +
                 " 'topic' = '" + topic + "'," +
