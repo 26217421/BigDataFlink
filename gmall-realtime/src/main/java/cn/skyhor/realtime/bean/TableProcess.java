@@ -12,6 +12,10 @@ import java.io.Serializable;
  */
 public class TableProcess implements Serializable {
     private static final long serialVersionUID = 334148383619826631L;
+
+    public static final String SINK_TYPE_HBASE = "hbase";
+    public static final String SINK_TYPE_KAFKA = "kafka";
+    public static final String SINK_TYPE_CK = "clickhouse";
     /**
      * 来源表
      */
