@@ -1,5 +1,6 @@
 package cn.skyhor.realtime.app.dwd;
 
+import cn.skyhor.realtime.app.function.TableProcessFunction;
 import cn.skyhor.realtime.bean.TableProcess;
 import cn.skyhor.realtime.utils.MyKafkaUtil;
 import com.alibaba.fastjson.JSON;
@@ -12,17 +13,19 @@ import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.CheckpointingMode;
-import org.apache.flink.streaming.api.datastream.BroadcastConnectedStream;
-import org.apache.flink.streaming.api.datastream.BroadcastStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
+
+import javax.annotation.Nullable;
 
 /**
  * @author wbw
@@ -60,7 +63,7 @@ public class BaseDbApp {
                     }
 
                     @Override
-                    public void deserialize(SourceRecord sourceRecord, Collector<String> collector) throws Exception {
+                    public void deserialize(SourceRecord sourceRecord, Collector<String> collector) {
                         String topic = sourceRecord.topic();
                         String[] split = topic.split("\\.");
                         String db = split[1];
@@ -90,7 +93,19 @@ public class BaseDbApp {
         BroadcastStream<String> broadcastStream = tableProcessDS.broadcast(mapStateDescriptor);
         BroadcastConnectedStream<JSONObject, String> connectedStream = filterDS.connect(broadcastStream);
 
+        OutputTag<JSONObject> hbaseTag = new
+                OutputTag<JSONObject>(TableProcess.SINK_TYPE_HBASE) {
+                };
+        SingleOutputStreamOperator<JSONObject> kafkaJsonDS = connectedStream.process(new
+                TableProcessFunction(hbaseTag, mapStateDescriptor));
+        DataStream<JSONObject> hbaseJsonDS = kafkaJsonDS.getSideOutput(hbaseTag);
+
+        kafkaJsonDS.addSink(MyKafkaUtil.getKafkaProducer(
+                (KafkaSerializationSchema<JSONObject>) (element, timestamp) ->
+                        new ProducerRecord<>(element.getString("sinkTable"),
+                                element.getString("after").getBytes())));
         filterDS.print();
+
         env.execute();
     }
 
