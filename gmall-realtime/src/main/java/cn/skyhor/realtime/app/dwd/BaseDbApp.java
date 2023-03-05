@@ -1,5 +1,6 @@
 package cn.skyhor.realtime.app.dwd;
 
+import cn.skyhor.realtime.app.function.DimSinkFunction;
 import cn.skyhor.realtime.app.function.TableProcessFunction;
 import cn.skyhor.realtime.bean.TableProcess;
 import cn.skyhor.realtime.utils.MyKafkaUtil;
@@ -104,6 +105,7 @@ public class BaseDbApp {
                 (KafkaSerializationSchema<JSONObject>) (element, timestamp) ->
                         new ProducerRecord<>(element.getString("sinkTable"),
                                 element.getString("after").getBytes())));
+        hbaseJsonDS.addSink(new DimSinkFunction());
         filterDS.print();
 
         env.execute();

@@ -29,8 +29,10 @@ public class DimSinkFunction extends RichSinkFunction<JSONObject> {
         connection.setAutoCommit(true);
     }
 
-    //value:{"sinkTable":"dim_base_trademark","database":"gmall-210325-flink","before":{"tm_name":"atguigu","id":12},"after":{"tm_name":"Atguigu","id":12},"type":"update","tableName":"base_trademark"}
-    //SQL：upsert into db.tn(id,tm_name) values('...','...')
+    /**
+     * value:{"sinkTable":"dim_base_trademark","database":"gmall-210325-flink","before":{"tm_name":"atguigu","id":12},"after":{"tm_name":"Atguigu","id":12},"type":"update","tableName":"base_trademark"}
+     * SQL：upsert into db.tn(id,tm_name) values('...','...')
+     */
     @Override
     public void invoke(JSONObject value, Context context) throws Exception {
 
@@ -64,8 +66,10 @@ public class DimSinkFunction extends RichSinkFunction<JSONObject> {
 
     }
 
-    //data:{"tm_name":"Atguigu","id":12}
-    //SQL：upsert into db.tn(id,tm_name,aa,bb) values('...','...','...','...')
+    /**
+     * data:{"tm_name":"Atguigu","id":12}
+     * SQL：upsert into db.tn(id,tm_name,aa,bb) values('...','...','...','...')
+     */
     private String genUpsertSql(String sinkTable, JSONObject data) {
 
         Set<String> keySet = data.keySet();
