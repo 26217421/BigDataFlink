@@ -5,9 +5,8 @@ import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
 import cn.skyhor.realtime.app.function.CustomerDeserialization;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
-import org.apache.flink.runtime.state.filesystem.FsStateBackend;
-import org.apache.flink.streaming.api.CheckpointingMode;
+
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -30,7 +29,7 @@ public class FlinkCDC {
         //env.getCheckpointConfig().setMaxConcurrentCheckpoints(2);
         //env.getCheckpointConfig().setMinPauseBetweenCheckpoints(3000);
 
-        //env.setRestartStrategy(RestartStrategies.fixedDelayRestart());
+        env.setRestartStrategy(RestartStrategies.noRestart());
 
         //2.通过FlinkCDC构建SourceFunction并读取数据
         DebeziumSourceFunction<String> sourceFunction = MySQLSource.<String>builder()
@@ -39,7 +38,7 @@ public class FlinkCDC {
                 .username("root")
                 .password("262174")
                 .databaseList("gmall")
-                .deserializer(new StringDebeziumDeserializationSchema())
+                .deserializer(new CustomerDeserialization())
                 .startupOptions(StartupOptions.latest())
                 .build();
         DataStreamSource<String> streamSource = env.addSource(sourceFunction);

@@ -79,10 +79,12 @@ public class BaseLogApp {
                     public void processElement(JSONObject jsonObject, Context context,
                                                Collector<String> collector) throws Exception {
                         String startStr = jsonObject.getString("start");
-                        if (startStr != null && startStr.length() > 0) { //将启动日志输出到侧流
+                        if (startStr != null && startStr.length() > 0) {
+                            //将启动日志输出到侧流
                             context.output(new OutputTag<String>("start") { },
                                     jsonObject.toString());
-                        } else { //为页面数据
+                        } else {
+                            //为页面数据
                             collector.collect(jsonObject.toString());
                             JSONArray displays = jsonObject.getJSONArray("displays");
                             if (displays != null && displays.size() > 0) {

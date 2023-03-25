@@ -13,7 +13,7 @@ import java.util.Properties;
  * @author wbw
  */
 public class MyKafkaUtil {
-    private static final String BROKERS = "server103:9092,server103:9092,server103:9092";
+    private static final String BROKERS = "server103:9092,server103:9093,server103:9094";
     private static final String DEFAULT_TOPIC = "DWD_DEFAULT_TOPIC";
 
     public static FlinkKafkaProducer<String> getKafkaProducer(String topic) {
